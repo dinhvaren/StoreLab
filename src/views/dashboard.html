@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashboard — Store</title>
+
+  <!-- Inter font + Bootstrap + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#06060a;
+    --card:#0f1720;
+    --accent:#7c4dff;
+    --muted:#cbd5e1;   /* sửa muted sáng hơn */
+  }
+  body{ 
+    background:linear-gradient(180deg,var(--bg), #041021); 
+    color:#f8fafc;                /* chữ chính sáng hơn */
+    font-family:Inter,system-ui; 
+  }
+  .navbar-dark { 
+    background:linear-gradient(90deg, rgba(124,77,255,0.08), rgba(110,197,255,0.03)); 
+  }
+  .card-product{ 
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); 
+    border:1px solid rgba(255,255,255,0.08); 
+    border-radius:12px; 
+    color:#f1f5f9;                 /* chữ trong card sáng */
+  }
+  .price{ font-weight:700; color:#fff; }   /* giá nổi bật */
+  .muted{ color:var(--muted) }             /* text phụ sáng hơn */
+  .container-xl{ padding-top:2.25rem; padding-bottom:2.25rem; }
+  .hero{ 
+    padding:1.25rem; 
+    border-radius:12px; 
+    background:rgba(255,255,255,0.04); 
+    margin-bottom:1.25rem; 
+    color:#f1f5f9; /* chữ trong hero cũng sáng hơn */
+  }
+</style>
+
+</head>
+<body>
+  <!-- Top navbar -->
+  <nav class="navbar navbar-dark navbar-expand-lg px-3">
+    <a class="navbar-brand d-flex align-items-center" href="dashboard.html">
+      <div style="width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent), #6ec5ff);display:flex;align-items:center;justify-content:center;color:#fff;margin-right:8px">VL</div>
+      <span style="font-weight:700">Vuln Lab — Store</span>
+    </a>
+    <div class="ms-auto d-flex gap-2 align-items-center">
+      <a class="btn btn-sm btn-outline-light" href="orders.html"><i class="bi bi-basket3"></i> Orders</a>
+      <a class="btn btn-sm btn-outline-light" href="users.html"><i class="bi bi-people"></i> Users</a>
+      <a class="btn btn-sm btn-primary" href="index.html">Sign out</a>
+    </div>
+  </nav>
+
+  <div class="container-xl">
+    <!-- Hero / summary -->
+    <div class="hero d-flex justify-content-between align-items-center">
+      <div>
+        <h3 style="margin:0">Dashboard Store</h3>
+        <div class="muted">Showing a curated list of 10 products (static demo).</div>
+      </div>
+      <div class="text-end">
+        <div class="muted">Total products</div>
+        <div style="font-weight:700;font-size:1.25rem">10</div>
+      </div>
+    </div>
+
+    <!-- Product grid: 10 product cards (2 rows of 5 on large screens) -->
+    <div class="row g-3">
+      <!-- Repeat 10 times (here hand-coded with sample data) -->
+      <!-- Each product card has image, title, short desc, price, and action buttons -->
+      <!-- Product 1 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p1/480/320" class="img-fluid rounded mb-3" alt="product-1">
+          <h6 style="margin-bottom:0.25rem">Aurora Headset</h6>
+          <div class="muted small mb-2">Wireless gaming headset — stereo sound</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫790,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p2/480/320" class="img-fluid rounded mb-3" alt="product-2">
+          <h6 style="margin-bottom:0.25rem">Nebula Keyboard</h6>
+          <div class="muted small mb-2">Mechanical keyboard — RGB</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫1,250,000</div>
+              <div class="small muted">Low stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p3/480/320" class="img-fluid rounded mb-3" alt="product-3">
+          <h6 style="margin-bottom:0.25rem">Pulse Mouse</h6>
+          <div class="muted small mb-2">Ergonomic gaming mouse</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫420,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p4/480/320" class="img-fluid rounded mb-3" alt="product-4">
+          <h6 style="margin-bottom:0.25rem">Orbit Lamp</h6>
+          <div class="muted small mb-2">Smart desk lamp with app</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫360,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p5/480/320" class="img-fluid rounded mb-3" alt="product-5">
+          <h6 style="margin-bottom:0.25rem">Solar Charger</h6>
+          <div class="muted small mb-2">Portable power bank</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫520,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p6/480/320" class="img-fluid rounded mb-3" alt="product-6">
+          <h6 style="margin-bottom:0.25rem">Echo Speaker</h6>
+          <div class="muted small mb-2">Smart speaker — compact</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫880,000</div>
+              <div class="small muted">Preorder</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 7 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p7/480/320" class="img-fluid rounded mb-3" alt="product-7">
+          <h6 style="margin-bottom:0.25rem">Lumen Camera</h6>
+          <div class="muted small mb-2">Action camera 4K</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫2,150,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 8 -->
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+        <div class="card card-product p-3 h-100">
+          <img src="https://picsum.photos/seed/p8/480/320" class="img-fluid rounded mb-3" alt="product-8">
+          <h6 style="margin-bottom:0.25rem">Matrix Router</h6>
+          <div class="muted small mb-2">Wi-Fi 6 router</div>
+          <div class="d-flex justify-content-between align-items-center mt-auto">
+            <div>
+              <div class="price">₫1,050,000</div>
+              <div class="small muted">In stock</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-light me-1"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm btn-primary">Buy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div> <!-- end row -->
+
+    <!-- Pagination (static) -->
+    <div class="d-flex justify-content-end mt-4">
+      <nav>
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item disabled"><a class="page-link">Previous</a></li>
+          <li class="page-item active"><a class="page-link">1</a></li>
+          <li class="page-item"><a class="page-link">2</a></li>
+          <li class="page-item"><a class="page-link">Next</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Optional JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

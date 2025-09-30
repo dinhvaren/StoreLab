@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Order Detail</title>
+
+  <!-- Inter font + Bootstrap + Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#06060a;
+      --card:#0f1720;
+      --accent:#7c4dff;
+      --muted:#cbd5e1;
+      --text:#eef6ff;
+      --muted-2:#94a3b8;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,var(--bg), #031021);
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    }
+
+    .container-xl { padding:28px 20px; max-width:1000px; }
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 12px;
+      color: var(--text);
+    }
+    .small-muted { color: var(--muted); font-size:0.92rem; }
+
+    /* Items table */
+    .table-items {
+      width:100%;
+      border-collapse: separate;
+      border-spacing: 0 8px;
+    }
+    .table-items thead th {
+      color: var(--muted-2);
+      font-size:0.8rem;
+      text-transform: uppercase;
+      padding: 10px;
+    }
+    .table-items tbody tr {
+      background: rgba(255,255,255,0.02);
+      border-radius:8px;
+      transition: background 0.2s;
+    }
+    .table-items tbody tr:hover {
+      background: rgba(255,255,255,0.06);
+    }
+    .table-items td {
+      padding: 12px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-xl">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h3 style="margin:0"><i class="bi bi-receipt"></i> Order Detail</h3>
+      <a href="orders.html" class="btn btn-sm btn-outline-light"><i class="bi bi-arrow-left"></i> Back to Orders</a>
+    </div>
+
+    <!-- Order summary -->
+    <div class="card p-4 mb-4">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h5 class="mb-3">Order Information</h5>
+          <div><strong>Order ID:</strong> ORD-1005</div>
+          <div><strong>Status:</strong> <span class="badge bg-info text-dark">Processing</span></div>
+          <div><strong>Date:</strong> 2025-09-28</div>
+        </div>
+        <div class="col-md-6">
+          <h5 class="mb-3">Customer</h5>
+          <div><strong>Name:</strong> Alice</div>
+          <div><strong>Email:</strong> alice@example.com</div>
+          <div><strong>Address:</strong> 123 Main St, HCM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items -->
+    <div class="card p-4 mb-4">
+      <h5 class="mb-3">Items</h5>
+      <table class="table-items">
+        <thead>
+          <tr>
+            <th style="width:60%">Product</th>
+            <th style="width:15%">Qty</th>
+            <th style="width:25%">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Nebula Keyboard (RGB)</td>
+            <td>1</td>
+            <td>₫1,250,000</td>
+          </tr>
+          <tr>
+            <td>Pulse Mouse</td>
+            <td>2</td>
+            <td>₫840,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Totals -->
+    <div class="card p-4">
+      <h5 class="mb-3">Payment</h5>
+      <div class="d-flex justify-content-between">
+        <span>Subtotal</span>
+        <span>₫2,090,000</span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <span>Shipping</span>
+        <span>₫50,000</span>
+      </div>
+      <hr>
+      <div class="d-flex justify-content-between fw-bold">
+        <span>Total</span>
+        <span>₫2,140,000</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

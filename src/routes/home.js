@@ -7,7 +7,7 @@ router.get("/", (req, res) => {
   res.sendFile("index.html", { root: "src/views" });
 });
 
-router.get("/dashboard", auth, HomeController.dashboard);
+router.get("/dashboard", HomeController.dashboard);
 router.get("/api/products", auth, HomeController.getProducts);
 
 module.exports = router;

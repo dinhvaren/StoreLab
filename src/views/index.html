@@ -187,7 +187,7 @@
         localStorage.setItem("token", result.token);
         loginMsg.textContent = "Login successful! Redirecting...";
         loginMsg.classList.add("success");
-        setTimeout(()=> window.location.href = "dashboard.html", 1000);
+        setTimeout(()=> window.location.href = "/dashboard", 1000);
       } else {
         loginMsg.textContent = result.message || "Login failed";
         loginMsg.classList.add("error");

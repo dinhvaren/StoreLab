@@ -26,9 +26,11 @@ class OrderController {
       let total = 0;
       let flagValue = null;
 
-      for (let i of items) {
+      for (const i of items) {
         const product = await Product.findById(i.productId);
-        if (!product) return res.status(404).json({ message: "Product not found" });
+        if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+        }
 
         total += product.price * (i.quantity || 1);
 
@@ -41,7 +43,7 @@ class OrderController {
         userId: req.user.id,
         items,
         total,
-        status: "Completed",
+        status: flagValue ? "Completed" : "Pending",
       });
 
       await order.save();
@@ -51,18 +53,22 @@ class OrderController {
           success: true,
           message: "Order created (flag item)",
           orderId: order._id,
-          flag: flagValue, 
+          flag: flagValue,
         });
       }
 
-      res.status(201).json({ success: true, message: "Order created", order });
+      res.status(201).json({
+        success: true,
+        message: "Order created",
+        orderId: order._id,
+      });
     } catch (err) {
       console.error("Create order error:", err);
       res.status(500).json({ message: "Server error" });
     }
   }
 
-  // [GET] /orders/:id
+  // [GET] /orders/:id 
   async detail(req, res) {
     try {
       const order = await Order.findById(req.params.id)
@@ -81,7 +87,7 @@ class OrderController {
     }
   }
 
-  // [DELETE] /orders/:id
+  // [DELETE] /orders/:id - huỷ đơn
   async cancel(req, res) {
     try {
       const order = await Order.findById(req.params.id);
@@ -95,7 +101,7 @@ class OrderController {
         return res.status(400).json({ message: "Only pending orders can be cancelled" });
       }
 
-      await order.remove();
+      await order.deleteOne();
       res.json({ success: true, message: "Order cancelled" });
     } catch (err) {
       console.error("Cancel order error:", err);

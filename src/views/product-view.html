@@ -4,10 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Product Image View</title>
-  <!-- Bootstrap (CSS only) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="icon" type="image/png" href="/images/logo-removebg-preview.png" />
-
   <style>
     :root{
       --bg:#07121a;
@@ -25,10 +23,7 @@
       justify-content:center;
       padding:18px;
     }
-    .wrap{
-      width:100%;
-      max-width:1100px;
-    }
+    .wrap{ width:100%; max-width:1100px; }
     .card { background: var(--card); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; padding:14px; }
     .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; }
     .small-muted { color:var(--muted); font-size:0.92rem; }
@@ -41,22 +36,15 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <!-- top bar: minimal -->
       <div class="toolbar">
-        <div>
-          <a class="btn-back" href="dashboard.html">← Back to Store</a>
-        </div>
+        <a class="btn-back" href="dashboard.html">← Back to Store</a>
       </div>
 
-      <!-- result area: EITHER image (if url param) OR notice -->
-      <div id="resultArea" class="img-wrap">
-        <!-- content injected by JS below -->
-      </div>
+      <div id="resultArea" class="img-wrap"></div>
     </div>
   </div>
 
   <script>
-    // LẤY query param 'url' (không có UI để nhập)
     function getQueryParam(name){
       return new URLSearchParams(window.location.search).get(name);
     }
@@ -65,18 +53,14 @@
     const url = getQueryParam('url');
 
     if (!url) {
-      // KHÔNG hiển thị input — chỉ thông báo ngắn gọn
-      resultArea.innerHTML = '<div class="notice">No image specified. Open this page with <code>?url=&lt;IMAGE_URL&gt;</code> to view the image via server proxy.</div>';
+      resultArea.innerHTML = '<div class="notice">No image specified.<br>Use <code>?url=&lt;IMAGE_URL&gt;</code></div>';
     } else {
-      // Hiển thị CHỈ 1 thẻ <img> với src tới proxy endpoint
-      // Lưu ý: proxy endpoint phải là /product/view?url=...
       const proxy = '/product/view?url=' + encodeURIComponent(url);
       const img = document.createElement('img');
       img.src = proxy;
       img.alt = 'Product image (proxied)';
-      // nếu server trả không phải ảnh hoặc lỗi, show message thay vì text dump
       img.onerror = function(){
-        resultArea.innerHTML = '<div class="notice" style="color:#ffb4b4">Không thể tải ảnh. Server có thể trả lỗi hoặc nội dung không phải là ảnh.</div>';
+        resultArea.innerHTML = '<div class="notice" style="color:#ffb4b4">Không thể tải ảnh.<br>Server có thể trả lỗi hoặc nội dung không phải là ảnh.</div>';
       };
       resultArea.appendChild(img);
     }

@@ -23,8 +23,6 @@
       background: linear-gradient(180deg,var(--bg), #031021 120%);
       color:#e6eef8;
       font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
     }
 
     .auth-shell{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; }
@@ -50,6 +48,10 @@
     .form-control:focus{ box-shadow: 0 0 0 0.15rem rgba(124,77,255,0.12); border-color: rgba(124,77,255,0.7); }
     .btn-primary{ background: linear-gradient(90deg,var(--accent), #6ec5ff); border:none; }
     .small-muted{ font-size:0.85rem; color:var(--muted); }
+
+    .msg { margin-top:0.5rem; font-size:0.9rem; }
+    .msg.error { color:#f87171; }   /* đỏ */
+    .msg.success { color:#4ade80; } /* xanh */
   </style>
 </head>
 <body>
@@ -94,10 +96,10 @@
         </div>
 
         <!-- FORM: LOGIN -->
-        <form id="formLogin" class="mt-2" autocomplete="off" onsubmit="event.preventDefault();">
+        <form id="formLogin" class="mt-2" autocomplete="off">
           <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input name="username" type="text" class="form-control" placeholder="username" required>
+            <label class="form-label">Username / Email</label>
+            <input name="loginId" type="text" class="form-control" placeholder="username or email" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
@@ -105,10 +107,11 @@
           </div>
 
           <button class="btn btn-primary px-4" type="submit">Login</button>
+          <div id="loginMsg" class="msg"></div>
         </form>
 
         <!-- FORM: REGISTER -->
-        <form id="formRegister" class="mt-2" style="display:none" onsubmit="event.preventDefault();">
+        <form id="formRegister" class="mt-2" style="display:none">
           <div class="mb-3">
             <label class="form-label">Username</label>
             <input name="username" type="text" class="form-control" placeholder="newuser" required>
@@ -125,6 +128,7 @@
             <button class="btn btn-primary" type="submit">Create account</button>
             <button class="btn btn-outline-light" type="button" onclick="toggleForms('login')">Back to login</button>
           </div>
+          <div id="registerMsg" class="msg"></div>
         </form>
 
         <div class="mt-4 small-muted">
@@ -134,26 +138,98 @@
     </div>
   </div>
 
-  <script>
-    const btnLogin = document.getElementById('btnLogin');
-    const btnRegister = document.getElementById('btnRegister');
-    function toggleForms(mode){
-      const fLogin = document.getElementById('formLogin');
-      const fReg = document.getElementById('formRegister');
-      if(mode === 'register'){
-        fLogin.style.display = 'none';
-        fReg.style.display = 'block';
-        btnLogin.classList.remove('active');
-        btnRegister.classList.add('active');
-      } else {
-        fLogin.style.display = 'block';
-        fReg.style.display = 'none';
-        btnLogin.classList.add('active');
-        btnRegister.classList.remove('active');
-      }
+ <script>
+  const btnLogin = document.getElementById('btnLogin');
+  const btnRegister = document.getElementById('btnRegister');
+  const fLogin = document.getElementById('formLogin');
+  const fReg = document.getElementById('formRegister');
+  const loginMsg = document.getElementById('loginMsg');
+  const registerMsg = document.getElementById('registerMsg');
+
+  function toggleForms(mode){
+    if(mode === 'register'){
+      fLogin.style.display = 'none';
+      fReg.style.display = 'block';
+      btnLogin.classList.remove('active');
+      btnRegister.classList.add('active');
+    } else {
+      fLogin.style.display = 'block';
+      fReg.style.display = 'none';
+      btnLogin.classList.add('active');
+      btnRegister.classList.remove('active');
     }
-    btnLogin.addEventListener('click', () => toggleForms('login'));
-    btnRegister.addEventListener('click', () => toggleForms('register'));
-  </script>
+    // clear message
+    loginMsg.textContent = "";
+    registerMsg.textContent = "";
+  }
+  btnLogin.addEventListener('click', () => toggleForms('login'));
+  btnRegister.addEventListener('click', () => toggleForms('register'));
+
+  // LOGIN
+  fLogin.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginMsg.textContent = "Đang xử lý...";
+    loginMsg.className = "msg";
+
+    const data = {
+      loginId: fLogin.loginId.value,
+      password: fLogin.password.value
+    };
+
+    try {
+      const res = await fetch("/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (res.ok) {
+        localStorage.setItem("token", result.token);
+        loginMsg.textContent = "Login successful! Redirecting...";
+        loginMsg.classList.add("success");
+        setTimeout(()=> window.location.href = "dashboard.html", 1000);
+      } else {
+        loginMsg.textContent = result.message || "Login failed";
+        loginMsg.classList.add("error");
+      }
+    } catch (err) {
+      loginMsg.textContent = "Error connecting to server";
+      loginMsg.classList.add("error");
+    }
+  });
+
+  // REGISTER
+  fReg.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    registerMsg.textContent = "Đang xử lý...";
+    registerMsg.className = "msg";
+
+    const data = {
+      username: fReg.username.value,
+      email: fReg.email.value,
+      password: fReg.password.value
+    };
+    try {
+      const res = await fetch("/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (res.ok) {
+        registerMsg.textContent = "Register successful! Please login.";
+        registerMsg.classList.add("success");
+        setTimeout(()=> toggleForms("login"), 1200);
+      } else {
+        registerMsg.textContent = result.message || "Register failed";
+        registerMsg.classList.add("error");
+      }
+    } catch (err) {
+      registerMsg.textContent = "Error connecting to server";
+      registerMsg.classList.add("error");
+    }
+  });
+</script>
+
 </body>
 </html>

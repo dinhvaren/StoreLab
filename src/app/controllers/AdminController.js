@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { Users } = require("../models");
 
 class AdminController {
   // [GET] /admin/users

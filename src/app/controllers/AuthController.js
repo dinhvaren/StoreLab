@@ -33,11 +33,16 @@ class AuthController {
   }
 
   // [POST] /auth/login
+  // [POST] /auth/login
   async login(req, res) {
     try {
-      const { email, password } = req.body;
+      const { loginId, password } = req.body; // frontend gửi loginId (có thể là username hoặc email)
 
-      const user = await User.findOne({ email });
+      // tìm theo username hoặc email
+      const user = await User.findOne({
+        $or: [{ email: loginId }, { username: loginId }],
+      });
+
       if (!user) {
         return res.status(401).json({ message: "Invalid credentials" });
       }

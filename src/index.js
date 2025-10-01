@@ -10,7 +10,7 @@ const app = express();
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/image", express.static(path.join(__dirname, "..", "image")));
+app.use("/images", express.static(path.join(__dirname, "..", "images")));
 app.use(express.static(path.join(__dirname, "..", "views")));
 
 const port = process.env.PORT;

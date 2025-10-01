@@ -1,27 +1,21 @@
 <!doctype html>
 <html lang="vi">
 <head>
-  <!-- Meta + Responsiveness -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lab Auth — Login / Register</title>
+  <title>Login / Register</title>
 
-  <!-- Google Font: Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap 5 (CSS) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/images/logo-removebg-preview.png" />
 
-  <!-- Page custom styles (dark theme, modern look) -->
   <style>
     :root{
-      --bg:#0f1720;          /* very dark blue/grey */
-      --card:#111827;        /* slightly lighter */
+      --bg:#0f1720;
+      --card:#111827;
       --muted:#9aa4b2;
-      --accent:#7c4dff;      /* purple accent */
+      --accent:#7c4dff;
       --glass: rgba(255,255,255,0.03);
     }
     html,body{height:100%}
@@ -108,13 +102,6 @@
   </style>
 </head>
 <body>
-  <!--
-    index.html
-    - Một trang chứa cả Login và Register (toggle)
-    - Lưu ý: đây là giao diện tĩnh (HTML). Logic submit sẽ gọi backend lab của bạn.
-    - Các comment dưới đây giải thích cấu trúc và lớp CSS quan trọng.
-  -->
-
   <div class="auth-shell">
     <div class="auth-card">
 
@@ -198,9 +185,7 @@
         </form>
 
         <!-- FORM: REGISTER (hidden by default) -->
-        <form id="formRegister" class="mt-2" style="display:none" onsubmit="event.preventDefault(); /* submit to backend */">
-          <!-- NOTE: for lab CTF you may want to disable auto-escape of some fields on server side (for training).
-               Here UI only collects data. -->
+        <form id="formRegister" class="mt-2" style="display:none" onsubmit="event.preventDefault();">
           <div class="mb-3">
             <label class="form-label">Username</label>
             <input name="username" type="text" class="form-control" placeholder="newuser" required>

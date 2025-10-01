@@ -23,7 +23,12 @@ class AuthController {
         return res.status(400).json({ message: "Email already in use" });
       }
       const hashed = await bcrypt.hash(password, 10);
-      const user = new User({ username, email, password: hashed, role: "user" });
+      const user = new User({
+        username,
+        email,
+        password: hashed,
+        role: "user",
+      });
       await user.save();
       res.status(201).json({ message: "User registered successfully" });
     } catch (err) {
@@ -39,14 +44,17 @@ class AuthController {
       const user = await User.findOne({
         $or: [{ email: loginId }, { username: loginId }],
       });
-      if (!user) return res.status(401).json({ message: "Invalid credentials" });
+      if (!user)
+        return res.status(401).json({ message: "Invalid credentials" });
 
       const match = await bcrypt.compare(password, user.password);
-      if (!match) return res.status(401).json({ message: "Invalid credentials" });
+      if (!match)
+        return res.status(401).json({ message: "Invalid credentials" });
 
+      const flag = process.env.CTF_FLAG;
       const token = jwt.sign(
-        { id: user._id, role: user.role },
-        process.env.JWT_SECRET || "secret",
+        { id: user._id, role: user.role, flag },
+        process.env.JWT_SECRET,
         { expiresIn: "1h" }
       );
 
@@ -63,7 +71,7 @@ class AuthController {
       const authHeader = req.headers["authorization"];
       if (!authHeader) return res.status(401).json({ message: "No token" });
       const token = authHeader.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || "secret");
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select("-password");
       if (!user) return res.status(404).json({ message: "User not found" });
       res.json(user);

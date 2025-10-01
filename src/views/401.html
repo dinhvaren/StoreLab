@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>401 Unauthorized</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:#06060a;
+      --card:#0f1720;
+      --accent:#7c4dff;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+    }
+    body {
+      margin:0;
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(180deg,var(--bg), #031021);
+      font-family:Inter,system-ui;
+      color:var(--text);
+    }
+    .card {
+      text-align:center;
+      padding:2.5rem 2rem;
+      border-radius:12px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,0.05);
+      max-width:400px;
+      box-shadow:0 8px 20px rgba(0,0,0,0.45);
+    }
+    h1 {
+      font-size:3.2rem;
+      margin:0 0 0.5rem;
+      color:var(--accent);
+    }
+    p {
+      margin:0 0 1.5rem;
+      color:var(--muted);
+    }
+    a {
+      display:inline-block;
+      padding:0.6rem 1.2rem;
+      border-radius:8px;
+      text-decoration:none;
+      background:var(--accent);
+      color:#fff;
+      font-weight:600;
+      transition:background 0.2s;
+    }
+    a:hover { background:#6935f7; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>401</h1>
+    <p>Unauthorized — Bạn cần đăng nhập để truy cập trang này.</p>
+    <a href="/auth/login">Đăng nhập</a>
+  </div>
+</body>
+</html>

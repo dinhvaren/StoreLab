@@ -1,17 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const AuthController = require("../app/controllers/AuthController");
+const { AuthController } = require("../app/controllers/index");
+const { auth, isAdmin } = require("../app/middlewares/auth");
 
-// Register
-router.post("/register", (req, res) => AuthController.register(req, res));
-
-// Login
-router.post("/login", (req, res) => AuthController.login(req, res));
-
-// Lấy thông tin user từ token
-router.get("/me", (req, res) => AuthController.me(req, res));
-
-// Logout
-router.post("/logout", (req, res) => AuthController.logout(req, res));
+router.post("/register", AuthController.register);
+router.post("/login", AuthController.login);
+router.get("/me", auth, AuthController.me);
+router.post("/logout", auth, AuthController.logout);
 
 module.exports = router;

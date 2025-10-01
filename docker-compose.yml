@@ -13,6 +13,9 @@ services:
       - mongo
     networks:
       - storelab_net
+    volumes:
+      - ./images:/app/images
+      - ./src/views:/app/src/views
 
   mongo:
     image: mongo:6

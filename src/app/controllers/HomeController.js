@@ -13,7 +13,7 @@ class HomeController {
       });
     } catch (err) {
       console.error("Dashboard error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 }

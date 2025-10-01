@@ -28,7 +28,7 @@ class AuthController {
       res.status(201).json({ message: "User registered successfully" });
     } catch (err) {
       console.error("Register error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -59,7 +59,7 @@ class AuthController {
       });
     } catch (err) {
       console.error("Login error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -78,7 +78,7 @@ class AuthController {
       res.json(user);
     } catch (err) {
       console.error("Me error:", err);
-      res.status(401).json({ message: "Invalid token" });
+      res.status(401).sendFile("401.html", { root: "src/views" });
     }
   }
 

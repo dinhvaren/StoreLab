@@ -8,7 +8,7 @@ class AdminController {
       res.json(users);
     } catch (err) {
       console.error("List users error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -20,7 +20,7 @@ class AdminController {
       res.json(user);
     } catch (err) {
       console.error("Get user error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -36,7 +36,7 @@ class AdminController {
       const newUser = new User({
         username,
         email,
-        password, // ⚠️ demo lab, có thể để plain hoặc hash tuỳ mục đích
+        password,
         role: role || "user",
       });
 
@@ -44,7 +44,7 @@ class AdminController {
       res.status(201).json({ message: "User created", user: newUser });
     } catch (err) {
       console.error("Create user error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -64,7 +64,7 @@ class AdminController {
       res.json({ message: "User updated", user: updated });
     } catch (err) {
       console.error("Update user error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 
@@ -77,7 +77,7 @@ class AdminController {
       res.json({ message: "User deleted" });
     } catch (err) {
       console.error("Delete user error:", err);
-      res.status(500).json({ message: "Server error" });
+      res.status(500).sendFile("500.html", { root: "src/views" });
     }
   }
 }

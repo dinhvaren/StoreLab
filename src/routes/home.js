@@ -1,4 +1,4 @@
-const { HomeController, OdersController, UsersController } = require("../app/controllers/index");
+const { HomeController, OdersController, UsersController, AdminController } = require("../app/controllers/index");
 const express = require("express");
 const router = express.Router();
 
@@ -9,5 +9,6 @@ router.get("/view/product", HomeController.viewProduct);
 router.get("/orders", OdersController.showOrders);
 router.get("/view/orders/:id", OdersController.viewOrder);
 router.get("/users/:id", UsersController.showUsers);
+router.get("/admin", AdminController.dashboard);
 
 module.exports = router;

@@ -6,8 +6,6 @@ sudo docker-compose down -d
 echo "🔁 Pulling latest code..."
 git pull origin main || true
 
-npm install
-
 echo "📦 Building Docker containers..."
 sudo docker-compose build --no-cache
 

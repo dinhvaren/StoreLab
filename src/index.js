@@ -37,7 +37,7 @@ app.set("views", path.join(__dirname, "views"));
 const port = process.env.PORT;
 const host = process.env.HOST;
 
-// db.connect();
+db.connect();
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -57,7 +57,7 @@ app.use(
 
 route(app);
 
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
 app.listen(port, () => {
   console.log(`Server is running on http://${host}:${port}`);

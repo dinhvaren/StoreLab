@@ -16,6 +16,7 @@ services:
     volumes:
       - ./images:/app/images
       - ./src/views:/app/src/views
+      - .:/app
 
   mongo:
     image: mongo:6
@@ -25,6 +26,27 @@ services:
       - mongo_data:/data/db
     ports:
       - "27017:27017"
+    networks:
+      - storelab_net
+
+  mongo_cleaner:
+    image: node:18
+    container_name: mongo_cleaner
+    working_dir: /app
+    depends_on:
+      - mongo
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: >
+      bash -c "apt-get update -qq &&
+               apt-get install -y cron &&
+               echo '0 */2 * * * cd /app && node seedUsers.js && node seedProducts.js >> /var/log/cron.log 2>&1' > /etc/cron.d/seed &&
+               chmod 0644 /etc/cron.d/seed &&
+               crontab /etc/cron.d/seed &&
+               touch /var/log/cron.log &&
+               cron && tail -f /var/log/cron.log"
     networks:
       - storelab_net
 

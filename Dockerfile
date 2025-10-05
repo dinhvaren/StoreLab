@@ -1,5 +1,5 @@
 # Sử dụng Node.js LTS
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working dir trong container
 WORKDIR /app

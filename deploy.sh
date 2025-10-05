@@ -1,16 +1,16 @@
 #!/bin/bash
 set -e
 
-sudo docker-compose down -d
+sudo docker compose down -d
 
 echo "🔁 Pulling latest code..."
 git pull origin main || true
 
 echo "📦 Building Docker containers..."
-sudo docker-compose build --no-cache
+sudo docker compose build --no-cache
 
 echo "🚀 Starting containers..."
-sudo docker-compose up -d
+sudo docker compose up -d
 
 # Cấu hình Nginx nếu chưa có
 if [ ! -f /etc/nginx/sites-available/nothatphuquy ]; then

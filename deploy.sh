@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-sudo docker compose down -d
+sudo docker compose down -v
 
 echo "🔁 Pulling latest code..."
 git pull origin main || true

@@ -13,7 +13,7 @@ echo "🚀 Starting containers..."
 sudo docker compose up -d
 
 # Cấu hình Nginx nếu chưa có
-if [ ! -f /etc/nginx/sites-available/nothatphuquy ]; then
+if [ ! -f /etc/nginx/sites-available/storelab ]; then
   echo "🌐 Setting up Nginx..."
 sudo bash -c 'cat > /etc/nginx/sites-available/storelab <<EOF
 server {

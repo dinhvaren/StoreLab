@@ -1,65 +1,115 @@
-// seedUsers.js
 require("dotenv").config();
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
-const User = require("./src/app/models/User"); // đường dẫn model của bạn
+const Product = require("./src/app/models/Product");
 
 const MONGO = process.env.MONGODB_URI;
 
-const users = [
+const products = [
   {
-    username: "admin",
-    email: "admin@vhu-ctf.io",
-    password: bcrypt.hashSync("Dinhvaren@2203", 10),
-    role: "admin",
-    balance: 9999999,
-    avatar: "https://i.pravatar.cc/150?img=5",
+    title: "T-shirt Cyber Security Blue Team",
+    description: "T-shirt phong cách Blue Team — thích hợp cho defender.",
+    price: 199000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.1096611532.4256/ra,baby_tee,x750,000000:44f0b734a5,front-pad,600x600,f8f8f8.jpg",
+    isFlag: false,
+    flagValue: null,
   },
   {
-    username: "test",
-    email: "test@gmail.com",
-    password: bcrypt.hashSync("test123", 10),
-    role: "user",
-    balance: 200000,
-    avatar: "https://i.pravatar.cc/150?img=47",
+    title: "T-shirt Network Hacker Infosec",
+    description: "Áo Network Hacker — thích hợp cho pentesters.",
+    price: 149000,
+    stock: "Low stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.4954051389.5378/ssrco,classic_tee,mens,fafafa:ca443f4786,front_alt,square_product,600x600.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "T-shirt Cyber Hacker Ethical Hacking",
+    description: "Áo Cyber Hacker — ethical hacking vibes.",
+    price: 169000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.2128462354.3764/ssrco,classic_tee,mens,101010:01c5ca27c6,front_alt,square_product,600x600.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "T-shirt Hacker Gifts for a Ethical",
+    description: "Hacker gifts — phong cách nhẹ, phù hợp làm quà.",
+    price: 159000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.2218982164.9729/ssrco,classic_tee,mens,101010:01c5ca27c6,front_alt,square_product,600x600.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "T-shirt Hacker Cat Cyberpunk",
+    description: "Hacker Cat — phong cách cyberpunk dễ thương.",
+    price: 139000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.4602622832.4788/ssrco,classic_tee,mens,fafafa:ca443f4786,front_alt,square_product,600x600.u3.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "T-shirt it not bug",
+    description: "Áo 'it not bug' — meme dev/hacker.",
+    price: 129000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.3449915915.2302/ssrco,classic_tee,mens,fafafa:ca443f4786,front_alt,square_product,600x600.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "T-shirt ChatGPT Hacker",
+    description: "Áo ChatGPT — hacker meets AI.",
+    price: 159000,
+    stock: "In stock",
+    imageUrl:
+      "https://ih1.redbubble.net/image.4753142675.8736/ssrco,classic_tee,mens,101010:01c5ca27c6,front_alt,square_product,600x600.jpg",
+    isFlag: false,
+    flagValue: null,
+  },
+  {
+    title: "CTF VIP Flag",
+    description:
+      "A mysterious product. Purchasing returns a hidden flag in the API response.",
+    price: 9999999,
+    stock: "In stock",
+    imageUrl: "https://hunghau.vn/wp-content/uploads/2018/05/vhu.jpg",
+    isFlag: true,
+    flagValue: "vhuCTF{b20k3n_4((355_(0n7201}",
   },
 ];
 
 (async () => {
   try {
     console.log("🔌 Connecting to MongoDB...");
-    await mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true });
-    console.log("✅ Connected.");
+    await mongoose.connect(MONGO, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("✅ Connected to MongoDB");
 
-    const db = mongoose.connection.db;
+    await Product.deleteMany({});
+    console.log("🧹 Cleared products collection");
 
-    try {
-      await db.collection("users").dropIndex("userId_1");
-      console.log("🗑️ Dropped index userId_1");
-    } catch (e) {
-      console.log("ℹ️ Index userId_1 not present or could not be dropped (ok):", e.message);
-    }
-
-    try {
-      await db.collection("counters").deleteMany({});
-      console.log("🧹 Cleared counters collection.");
-    } catch (e) {
-      console.log("ℹ️ counters collection not present (ok).");
-    }
-
-    await db.collection("users").deleteMany({});
-    console.log("🧹 Cleared users collection.");
-
-    // 4) Insert users
-    const inserted = await User.insertMany(users);
-    console.log(`📥 Inserted ${inserted.length} users.`);
+    await Product.insertMany(products);
+    console.log(`📦 Inserted ${products.length} products`);
 
     await mongoose.connection.close();
     console.log("✅ Done — connection closed.");
     process.exit(0);
   } catch (err) {
     console.error("❌ Seeding error:", err);
-    try { await mongoose.connection.close(); } catch (e) {}
+    try {
+      await mongoose.connection.close();
+    } catch (e) {}
     process.exit(1);
   }
 })();

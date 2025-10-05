@@ -59,7 +59,7 @@ StoreLab/
    ```bash
    git clone https://github.com/dinhvaren/StoreLab.git
    cd StoreLab
-````
+  ```
 
 2. Xây dựng & chạy:
 
@@ -92,8 +92,6 @@ Nếu bạn muốn chỉ seed `products` (giữ user admin bất biến), có th
 ```bash
 node seedProducts.js
 ```
-
----
 
 ## 🧪 Sử dụng script seed đúng cách
 

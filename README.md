@@ -42,7 +42,7 @@ StoreLab/
 ├── package.json
 └── README.md
 
-````
+```
 
 ## 🛠️ Cài đặt & chạy
 
@@ -123,4 +123,3 @@ Dưới đây là một số ý tưởng để thực hành:
 * Dự án xây dựng bởi **dinhvaren**
 * Mục đích: môi trường CTF / lab bảo mật cho sinh viên & cộng đồng
 * Rất hoan nghênh các PR, issue sửa lỗi, bổ sung lỗ hổng mới
-

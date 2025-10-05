@@ -22,7 +22,6 @@ app.engine(
       formatDate: (date) => {
         if (!date) return "-";
         const d = new Date(date);
-        // format kiểu Việt Nam: dd/mm/yyyy, hh:mm
         return d.toLocaleString("vi-VN", {
           day: "2-digit",
           month: "2-digit",

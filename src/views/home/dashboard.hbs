@@ -67,7 +67,17 @@
 
   .toast.success { border-left-color: #4ade80; }
   .toast.error { border-left-color: #ef4444; }
-  .toast.warning { border-left-color: #facc15; }
+  .toast.warning { 
+    border-left-color: #facc15;
+    background: linear-gradient(90deg, rgba(124,77,255,0.1), rgba(110,197,255,0.08));
+    box-shadow: 0 0 16px rgba(124,77,255,0.4);
+    animation: glowCTF 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glowCTF {
+    from { box-shadow: 0 0 10px rgba(124,77,255,0.3), 0 0 20px rgba(110,197,255,0.2); }
+    to   { box-shadow: 0 0 25px rgba(124,77,255,0.8), 0 0 50px rgba(110,197,255,0.6); }
+  }
 
   .toast .close-btn {
     background: none;
@@ -78,7 +88,19 @@
     padding: 0;
   }
   .toast .close-btn:hover { color: #fff; }
+
+  .toast.warning.show {
+    animation: glowCTF 2s ease-in-out infinite alternate,
+              scaleIn 0.4s ease forwards;
+  }
+
+  @keyframes scaleIn {
+    from { transform: translateX(120%) scale(0.95); opacity: 0; }
+    to   { transform: translateX(0) scale(1); opacity: 1; }
+  }
+
 </style>
+
 
 {{> header}}
 <div class="container-xl">
@@ -126,26 +148,36 @@
   </div>
 </div>
 {{> footer}}
+
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-  function showToast(message, type = "success", duration = 4000) {
+  function showToast(message, type = "success", duration = 4000, isFlag = false, flagValue = "") {
     const container = document.getElementById("toastContainer");
     const toast = document.createElement("div");
     toast.className = `toast ${type}`;
-    toast.innerHTML = `
-      <span>${message}</span>
-      <button class="close-btn">&times;</button>
-    `;
+
+    if (isFlag) {
+      toast.innerHTML = `
+        <div>
+          <div style="font-weight:700;font-size:1rem;">🎯 FLAG unlocked!</div>
+          <div style="color:#a5f3fc;font-weight:500;margin-top:4px;word-break:break-all;">
+            ${flagValue}
+          </div>
+        </div>
+        <button class="close-btn">&times;</button>
+      `;
+    } else {
+      toast.innerHTML = `
+        <span>${message}</span>
+        <button class="close-btn">&times;</button>
+      `;
+    }
 
     container.appendChild(toast);
-
-    requestAnimationFrame(() => {
-      toast.classList.add("show");
-    });
+    requestAnimationFrame(() => toast.classList.add("show"));
 
     const timeout = setTimeout(() => hideToast(), duration);
-
     toast.querySelector(".close-btn").addEventListener("click", hideToast);
 
     function hideToast() {
@@ -157,7 +189,7 @@
 
   document.querySelectorAll(".btn-buy").forEach(btn => {
     btn.addEventListener("click", async () => {
-      const productId = btn.getAttribute("data-id");
+      const productId = btn.dataset.id;
       const title = btn.dataset.title;
 
       try {
@@ -171,11 +203,11 @@
           showToast(`✅ ${data.message}`, "success");
 
           if (data.flag) {
-            showToast(`🎯 FLAG unlocked!`, "warning", 6000);
+            showToast("", "warning", 8000, true, data.flag);
             console.log("%c🎯 FLAG:", "color:#7c4dff;font-weight:bold;", data.flag);
           }
 
-          setTimeout(() => location.reload(), 2000);
+          setTimeout(() => location.reload(), 3000);
         } else {
           showToast(`⚠️ ${data.message}`, "error");
         }

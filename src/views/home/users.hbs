@@ -1,63 +1,110 @@
 <style>
-    :root{ 
-      --bg:#06060a; 
-      --muted:#cbd5e1;
-      --accent:#7c4dff; 
-    }
-    body{
-      background:linear-gradient(180deg,var(--bg), #031021);
-      color:#f8fafc;
-      font-family:Inter;
-    }
-    .container{padding-top:2.25rem;padding-bottom:2.25rem}
-    .card{
-      background:rgba(255,255,255,0.04);
-      border:1px solid rgba(255,255,255,0.08);
-      color:#f1f5f9;
-    }
-    .muted{color:var(--muted)}
-    .avatar{width:90px;height:90px;border-radius:50%;object-fit:cover}
-    dt{color:#f1f5f9;font-weight:600}
-    dd{color:#e2e8f0;}
-  </style>
-  <nav class="navbar navbar-dark px-3">
-    <a class="navbar-brand" href="dashboard.html">← Back to Store</a>
-    <div class="ms-auto"><a class="btn btn-sm btn-outline-light" href="index.html">Sign out</a></div>
-  </nav>
+  :root {
+    --bg: #06060a;
+    --muted: #cbd5e1;
+    --accent: #7c4dff;
+  }
 
-  <div class="container">
-    <h4>My Profile</h4>
-    <p class="muted">Thông tin cá nhân của user hiện tại.</p>
+  body {
+    background: linear-gradient(180deg, var(--bg), #031021);
+    color: #f8fafc;
+    font-family: Inter, system-ui;
+  }
 
-    <!-- Profile card -->
-    <div class="card p-4 d-flex flex-row align-items-center gap-4">
-      <img class="avatar" src="https://i.pravatar.cc/150?img=47" alt="avatar">
+  .container { padding-top: 2.25rem; padding-bottom: 2.25rem; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+  }
+
+  .muted { color: var(--muted); }
+  .avatar {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(124, 77, 255, 0.3);
+  }
+
+  dt { color: #f1f5f9; font-weight: 600; }
+  dd { color: #e2e8f0; }
+
+  .alert {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+  }
+
+  .alert-warning {
+    background: rgba(255,193,7,0.1);
+    border: 1px solid rgba(255,193,7,0.3);
+    color: #ffca2c;
+  }
+
+  .alert-success {
+    background: rgba(25,135,84,0.1);
+    border: 1px solid rgba(25,135,84,0.3);
+    color: #66ff99;
+  }
+
+  .badge {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+
+{{> header}}
+
+<div class="container">
+  <h4>{{#if warning}}User Profile{{else}}My Profile{{/if}}</h4>
+  <p class="muted">Thông tin cá nhân của user hiện tại.</p>
+
+  {{#if warning}}
+    <div class="alert alert-warning">{{warning}}</div>
+  {{/if}}
+
+  {{#if flag}}
+    <div class="alert alert-success">🏁 <b>FLAG:</b> {{flag}}</div>
+  {{/if}}
+
+  <!-- Profile Card -->
+  <div class="card p-4 d-flex flex-row align-items-center gap-4 mt-3">
+    <img class="avatar" src="{{profile.avatar}}" alt="{{profile.username}}">
+    <div>
+      <h5 class="mb-1">{{profile.username}}</h5>
+      <div class="muted small mb-1">{{profile.email}}</div>
       <div>
-        <h5 class="mb-1">Alice</h5>
-        <div class="muted small mb-1">alice@example.com</div>
-        <div><span class="badge bg-secondary">user</span></div>
+        <span class="badge bg-secondary">{{profile.role}}</span>
+        {{#if (eq profile.role "admin")}}<span class="badge bg-warning text-dark ms-2">Admin</span>{{/if}}
       </div>
     </div>
-
-    <!-- Account info -->
-    <div class="card p-3 mt-4">
-      <h6 class="mb-3">Account Details</h6>
-      <dl class="row mb-0">
-        <dt class="col-sm-3">Username</dt><dd class="col-sm-9">alice</dd>
-        <dt class="col-sm-3">Email</dt><dd class="col-sm-9">alice@example.com</dd>
-        <dt class="col-sm-3">Role</dt><dd class="col-sm-9">user</dd>
-        <dt class="col-sm-3">Member Since</dt><dd class="col-sm-9">2025-01-15</dd>
-        <dt class="col-sm-3">Last Login</dt><dd class="col-sm-9">2025-09-28 21:33</dd>
-      </dl>
-    </div>
-
-    <!-- Recent activity -->
-    <div class="card p-3 mt-4">
-      <h6 class="mb-3">Recent Activity</h6>
-      <ul class="list-unstyled mb-0">
-        <li class="mb-2"><i class="bi bi-bag-check me-2"></i> Ordered “Nebula Keyboard” — 2025-09-25</li>
-        <li class="mb-2"><i class="bi bi-pencil-square me-2"></i> Updated profile email — 2025-09-20</li>
-        <li><i class="bi bi-box-arrow-in-right me-2"></i> Logged in — 2025-09-18</li>
-      </ul>
-    </div>
   </div>
+
+  <!-- Account Info -->
+  <div class="card p-3 mt-4">
+    <h6 class="mb-3">Account Details</h6>
+    <dl class="row mb-0">
+      <dt class="col-sm-3">User ID</dt><dd class="col-sm-9">#{{profile.userId}}</dd>
+      <dt class="col-sm-3">Username</dt><dd class="col-sm-9">{{profile.username}}</dd>
+      <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{profile.email}}</dd>
+      <dt class="col-sm-3">Role</dt><dd class="col-sm-9">{{profile.role}}</dd>
+      <dt class="col-sm-3">Balance</dt><dd class="col-sm-9">₫{{profile.balance}}</dd>
+      <dt class="col-sm-3">Member Since</dt><dd class="col-sm-9">{{formatDate profile.createdAt}}</dd>
+      <dt class="col-sm-3">Last Login</dt><dd class="col-sm-9">{{formatDate profile.lastLogin}}</dd>
+    </dl>
+  </div>
+
+  <!-- Recent Activity (demo) -->
+  <div class="card p-3 mt-4">
+    <h6 class="mb-3">Recent Activity</h6>
+    <ul class="list-unstyled mb-0">
+      <li class="mb-2"><i class="bi bi-bag-check me-2 text-accent"></i> Ordered “Nebula Keyboard” — 2025-09-25</li>
+      <li class="mb-2"><i class="bi bi-pencil-square me-2 text-accent"></i> Updated profile email — 2025-09-20</li>
+      <li><i class="bi bi-box-arrow-in-right me-2 text-accent"></i> Logged in — 2025-09-18</li>
+    </ul>
+  </div>
+</div>
+
+{{> footer}}

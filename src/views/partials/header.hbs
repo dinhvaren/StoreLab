@@ -1,17 +1,103 @@
-  <nav class="navbar navbar-dark navbar-expand-lg px-3">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-       <img src="/images/logo.png" alt="Logo" style="width:36px;height:36px;border-radius:8px;margin-right:8px">
-      <span style="font-weight:700">VHU Store</span>
-    </a>
+<nav class="navbar navbar-dark navbar-expand-lg px-3 custom-navbar">
+  <a class="navbar-brand d-flex align-items-center" href="/dashboard">
+    <img src="/images/logo.png" alt="Logo" style="width:36px;height:36px;border-radius:8px;margin-right:8px">
+    <span style="font-weight:700">VHU Store</span>
+  </a>
 
-    <div class="ms-auto d-flex align-items-center gap-2">
+  <div class="ms-auto d-flex align-items-center gap-3">
+    {{#if user}}
+      <!-- Balance -->
       <span class="badge-balance">
         <i class="bi bi-coin"></i>
-        Balance: <span id="balanceValue">10</span>
+        Balance: <span id="balanceValue">{{user.balance}}</span>
       </span>
 
-      <a class="btn btn-sm btn-outline-light" href="#"><i class="bi bi-basket3"></i> Orders</a>
-      <a class="btn btn-sm btn-outline-light" href="#"><i class="bi bi-people"></i> Users</a>
-      <a class="btn btn-sm btn-primary" href="/auth/logout">Sign out</a>
-    </div>
-  </nav>
+      <!-- Username + Role -->
+      <span class="muted small">
+        <i class="bi bi-person-circle"></i> {{user.username}} 
+        {{#if (eq user.role "admin")}}
+          <span class="badge bg-warning text-dark ms-1">Admin</span>
+        {{/if}}
+      </span>
+
+      <!-- Orders -->
+      <a class="btn btn-sm btn-outline-light" href="/orders">
+        <i class="bi bi-basket3"></i> Orders
+      </a>
+
+      <!-- Users -->
+      {{#if (eq user.role "admin")}}
+        <a class="btn btn-sm btn-outline-light" href="/admin/users">
+          <i class="bi bi-people"></i> Manage Users
+        </a>
+      {{else}}
+        <a class="btn btn-sm btn-outline-light" href="/users/{{user._id}}">
+          <i class="bi bi-person-lines-fill"></i> Profile
+        </a>
+      {{/if}}
+
+      <!-- Logout -->
+      <a class="btn btn-sm btn-primary" href="/auth/logout">
+        Sign out
+      </a>
+    {{else}}
+      <a class="btn btn-sm btn-primary" href="/auth/login">Sign in</a>
+    {{/if}}
+  </div>
+</nav>
+
+<style>
+  :root {
+    --nav-bg-start: #0a0a14;
+    --nav-bg-end: #11172a;
+    --nav-accent: #7c4dff;
+  }
+  .custom-navbar {
+    background: linear-gradient(90deg, var(--nav-bg-start), var(--nav-bg-end));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .navbar-brand span {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .navbar-dark .navbar-brand:hover {
+    color: var(--nav-accent);
+  }
+
+  .badge-balance {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(90deg, rgba(124,77,255,0.25), rgba(110,197,255,0.08));
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    border: 1px solid rgba(124,77,255,0.25);
+  }
+
+  .btn-outline-light {
+    color: #e6eef8;
+    border-color: rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+  }
+
+  .btn-outline-light:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.25);
+  }
+
+  .btn-primary {
+    background: linear-gradient(90deg, var(--nav-accent), #6ec5ff);
+    border: none;
+    font-weight: 500;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+</style>

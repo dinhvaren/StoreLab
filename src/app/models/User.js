@@ -3,6 +3,7 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const userSchema = new mongoose.Schema(
   {
+    _id: { type: Number },
     userId: { type: Number, unique: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
@@ -19,5 +20,6 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.plugin(AutoIncrement, { inc_field: "userId" });
+userSchema.plugin(AutoIncrement, { id: "user_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("User", userSchema);

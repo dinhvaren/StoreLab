@@ -3,8 +3,9 @@ const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const orderSchema = new mongoose.Schema(
   {
+    _id: { type: Number },
     orderId: { type: Number, unique: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: Number, ref: "User", required: true },
 
     items: [
       {
@@ -17,10 +18,11 @@ const orderSchema = new mongoose.Schema(
     status: { type: String, enum: ["Pending", "Completed"], default: "Pending" },
   },
   {
-    timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" },
+    timestamps: true,
   }
 );
 
 orderSchema.plugin(AutoIncrement, { inc_field: "orderId" });
+orderSchema.plugin(AutoIncrement, { id: "order_seq", inc_field: "_id" });
 
 module.exports = mongoose.model("Order", orderSchema);

@@ -8,6 +8,9 @@ DOMAIN="vhu-storelab.io.vn"
 echo "🔁 Pulling latest code..."
 git pull origin main || true
 
+echo "📦 Remove Docker containers..."
+sudo docker compose down -v
+
 echo "📦 Building Docker containers..."
 sudo docker compose build --no-cache
 

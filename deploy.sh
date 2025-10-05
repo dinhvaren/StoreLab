@@ -46,7 +46,8 @@ if [ ! -f /etc/nginx/sites-available/storelab ]; then
       }
   }
   EOF"
-
+  
+  sudo mv /tmp/storelab.conf /etc/nginx/sites-available/storelab
   sudo ln -s /etc/nginx/sites-available/storelab /etc/nginx/sites-enabled/
   sudo nginx -t && sudo systemctl restart nginx
 fi

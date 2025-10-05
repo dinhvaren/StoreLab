@@ -10,6 +10,7 @@ router.get("/orders", OdersController.showOrders);
 router.get("/view/orders/:id", OdersController.viewOrder);
 router.get("/users/:id", UsersController.showUsers);
 router.get("/admin", AdminController.dashboard);
+router.post("/admin/users", AdminController.createUser);
 router.put("/admin/users/:id", AdminController.editUser);
 router.delete("/admin/users/:id", AdminController.deleteUser);
 

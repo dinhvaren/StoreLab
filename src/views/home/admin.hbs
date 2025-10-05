@@ -272,8 +272,8 @@
       }
 
       if (ev.target.closest('.btn-view')) {
-        const username = tr.querySelector('.td-username').textContent;
-        alert('Open profile for ' + username + ' (demo). Implement server route /users/:id to view profile.)');
+        const id = tr.getAttribute('data-id');
+        window.location.href = `/users/${id}`;
         return;
       }
 
@@ -382,4 +382,69 @@
     }
 
     renumberRows();
+ userForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = inputId.value;
+  const username = inputUsername.value.trim();
+  const email = inputEmail.value.trim();
+  const role = inputRole.value;
+  const pwd = inputPassword.value;
+
+  if (!username || !email) return;
+
+  try {
+    let res, data;
+
+    if (id) {
+      // PUT — Cập nhật user
+      res = await fetch(`/admin/users/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, role }),
+      });
+    } else {
+      // POST — Tạo mới user
+      res = await fetch(`/admin/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, role, password: pwd }),
+      });
+    }
+
+    data = await res.json();
+
+    if (res.ok) {
+      console.log("✅", data.message || (id ? "Cập nhật thành công!" : "Tạo user thành công!"));
+      window.location.reload();
+    } else {
+      console.warn("⚠️", data.message || "Lỗi khi lưu user!");
+    }
+  } catch (err) {
+    console.error("❌ Lỗi khi gọi API:", err);
+  }
+
+  userModal.hide();
+});
+
+document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+  if (!rowToDelete) return confirmModal.hide();
+
+  const id = rowToDelete.getAttribute('data-id');
+  try {
+    const res = await fetch(`/admin/users/${id}`, { method: "DELETE" });
+    const data = await res.json();
+
+    if (res.ok) {
+      console.log("🗑️", data.message || "Đã xoá user thành công!");
+      window.location.reload();
+    } else {
+      console.warn("⚠️", data.message || "Xoá thất bại!");
+    }
+  } catch (err) {
+    console.error("❌ Lỗi xoá user:", err);
+  }
+
+  confirmModal.hide();
+});
+
   </script>

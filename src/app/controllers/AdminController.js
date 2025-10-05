@@ -1,5 +1,6 @@
 const { User } = require("../models/index");
 const jwt = require("jsonwebtoken");
+const { create } = require("../models/User");
 require("dotenv").config();
 
 class AdminController {
@@ -78,6 +79,33 @@ class AdminController {
     } catch (err) {
       console.error("Lỗi deleteUser:", err);
       res.status(500).json({ message: "Server error khi xoá user" });
+    }
+  }
+
+// [POST] /admin/users
+  async createUser(req, res) {
+    try {
+      const token = req.cookies.token;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const admin = await User.findById(decoded.id);
+
+      if (!admin || admin.role !== "admin")
+        return res.status(403).json({ message: "Bạn không có quyền." });
+
+      const { username, email, role, password } = req.body;
+      if (!username || !email || !password)
+        return res.status(400).json({ message: "Thiếu thông tin bắt buộc." });
+
+      const exist = await User.findOne({ $or: [{ username }, { email }] });
+      if (exist) return res.status(409).json({ message: "User đã tồn tại." });
+
+      const newUser = new User({ username, email, password, role });
+      await newUser.save();
+
+      res.json({ success: true, message: "Tạo user mới thành công!", newUser });
+    } catch (err) {
+      console.error("Lỗi createUser:", err);
+      res.status(500).json({ message: "Server error khi tạo user" });
     }
   }
 }

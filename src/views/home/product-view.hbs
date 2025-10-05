@@ -1,115 +1,63 @@
 <style>
   :root{
-    --bg:#07121a;
-    --card: rgba(255,255,255,0.03);
-    --muted: #cbd5e1;
+    --bg:#06060a;
+    --card:#0f1720;
     --accent:#7c4dff;
+    --muted:#cbd5e1;
   }
-  html,body{height:100%}
   body{
-    margin:0;
-    background: linear-gradient(180deg,var(--bg), #021021);
-    color: #eef6ff;
-    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:18px;
+    background:linear-gradient(180deg,var(--bg), #031021);
+    color:#f8fafc;
+    font-family:Inter,system-ui;
+    padding:2rem;
   }
-  .wrap{
-    width:100%;
-    max-width:1100px;
-  }
-  .card { 
-    background: var(--card); 
-    border: 1px solid rgba(255,255,255,0.04); 
-    border-radius: 10px; 
-    padding:14px; 
-  }
-  .toolbar { 
-    display:flex; 
-    justify-content:space-between; 
-    align-items:center; 
-    margin-bottom:12px; 
-    gap:12px; 
-  }
-  .small-muted { color:var(--muted); font-size:0.92rem; }
-  .img-wrap { 
-    display:flex; 
-    align-items:center; 
-    justify-content:center; 
-    min-height:64vh; 
-    flex-direction:column;
+  .card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:1.25rem;
+    max-width:900px;
+    margin:auto;
     text-align:center;
   }
-  .img-wrap img { 
-    max-width:100%; 
-    max-height:80vh; 
-    border-radius:8px; 
-    box-shadow: 0 8px 30px rgba(2,6,23,0.7); 
-  }
-  .notice { 
-    text-align:center; 
-    padding:56px 10px; 
-    color:var(--muted); 
-  }
-  a.btn-back { 
-    text-decoration:none; 
-    color:#e6eef8; 
-    border:1px solid rgba(255,255,255,0.06); 
-    padding:6px 10px; 
-    border-radius:6px; 
-    background:transparent; 
-  }
-  pre {
-    background:rgba(255,255,255,0.05);
+  .muted{ color:var(--muted); }
+  pre{
+    text-align:left;
+    background:rgba(255,255,255,0.06);
     padding:1rem;
     border-radius:8px;
-    width:100%;
     overflow:auto;
+    font-size:0.9rem;
     color:#e2e8f0;
+  }
+  img{
+    max-width:100%;
+    border-radius:10px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.5);
   }
 </style>
 
-<div class="wrap">
-  <div class="card">
-    <div class="toolbar">
-      <div>
-        <a class="btn-back" href="/dashboard">← Back to Store</a>
-      </div>
-      <div class="small-muted">
-        Product Image View — proxy via <code>/view/product?url=...</code>
-      </div>
-    </div>
+<a href="/dashboard" style="text-decoration:none;color:#a5b4fc">← Back to Store</a>
 
-    <div class="img-wrap">
-      {{#if result}}
-        <h4 class="mb-3">Fetched Content (Preview)</h4>
-        <pre>{{result}}</pre>
-      {{else if error}}
-        <div class="notice" style="color:#ffb4b4">{{error}}</div>
-      {{else}}
-        <div class="notice">
-          No image specified.<br>
-          Open this page with <code>?url=&lt;IMAGE_URL&gt;</code> to view content via server proxy.
-        </div>
-      {{/if}}
+<div class="card mt-4">
+  <h3>Fetched Content Preview</h3>
+
+  {{#if flag}}
+    <div class="alert alert-success mt-3">
+      🏁 <b>FLAG:</b> {{flag}}
     </div>
-  </div>
+  {{/if}}
+
+  {{#if image}}
+    <div class="mt-4">
+      <img src="{{image}}" alt="Fetched image" />
+      <p class="muted mt-2">📸 Rendered from remote URL (image/*)</p>
+    </div>
+  {{else if result}}
+    <pre>{{result}}</pre>
+  {{else if error}}
+    <div style="color:#ff6b6b">{{error}}</div>
+  {{else}}
+    <div class="muted">🔍 Use ?url=... to fetch remote content</div>
+  {{/if}}
 </div>
-
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const url = urlParams.get('url');
-  const container = document.querySelector('.img-wrap');
-
-  if(url && !document.querySelector('pre') && !document.querySelector('.notice')){
-    const img = document.createElement('img');
-    img.src = '/view/product?url=' + encodeURIComponent(url);
-    img.alt = 'Product image (proxied)';
-    img.onerror = function(){
-      container.innerHTML = '<div class="notice" style="color:#ffb4b4">Không thể tải ảnh hoặc nội dung không phải ảnh.</div>';
-    };
-    container.appendChild(img);
-  }
-</script>

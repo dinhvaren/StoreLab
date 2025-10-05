@@ -45,9 +45,12 @@ class HomeController {
       const user = await User.findById(decoded.id);
       const product = await Product.findById(req.params.id);
 
-      if (!product) return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+      if (!product)
+        return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
       if (user.balance < product.price)
-        return res.status(400).json({ message: "Không đủ tiền trong tài khoản" });
+        return res
+          .status(400)
+          .json({ message: "Không đủ tiền trong tài khoản" });
 
       user.balance -= product.price;
       await user.save();
@@ -68,7 +71,10 @@ class HomeController {
         });
       }
 
-      res.json({ success: true, message: `Mua thành công sản phẩm "${product.title}"` });
+      res.json({
+        success: true,
+        message: `Mua thành công sản phẩm "${product.title}"`,
+      });
     } catch (err) {
       console.error("Lỗi khi mua hàng:", err);
       res.status(500).json({ message: "Lỗi server khi xử lý mua hàng" });
@@ -84,12 +90,10 @@ class HomeController {
         return res.render("home/product-view", {
           title: "View Product",
           result: null,
+          image: null,
           error: null,
         });
       }
-
-      const response = await axios.get(url, { timeout: 5000 });
-      const content = response.data;
 
       if (
         url.includes("127.0.0.1") ||
@@ -97,23 +101,50 @@ class HomeController {
         url.includes("metadata.google") ||
         url.includes("169.254.169.254")
       ) {
-        return res.send(`
-          <h3>✅ Internal Resource Accessed!</h3>
-          <p><b>Flag:</b> ${process.env.SSRF_FLAG}</p>
-        `);
+        return res.render("home/product-view", {
+          title: "View Product (SSRF Flag)",
+          result: null,
+          image: null,
+          error: null,
+          flag: process.env.SSRF_FLAG || "vhuCTF{ssrf_flag_default}",
+        });
       }
 
+      const response = await axios.get(url, {
+        responseType: "arraybuffer",
+        timeout: 5000,
+      });
+
+      const contentType = response.headers["content-type"] || "";
+
+      if (contentType.startsWith("image/")) {
+        const base64 = Buffer.from(response.data, "binary").toString("base64");
+        const imageSrc = `data:${contentType};base64,${base64}`;
+        return res.render("home/product-view", {
+          title: "View Product",
+          image: imageSrc,
+          result: null,
+          error: null,
+          flag: null,
+        });
+      }
+
+      const text = Buffer.from(response.data).toString("utf8");
       return res.render("home/product-view", {
         title: "View Product",
-        result: content.slice(0, 300) + "...",
+        image: null,
+        result: text.slice(0, 500),
         error: null,
+        flag: null,
       });
     } catch (err) {
       console.error("SSRF Error:", err.message);
       return res.render("home/product-view", {
         title: "View Product",
+        image: null,
         result: null,
         error: "❌ Request failed or invalid URL",
+        flag: null,
       });
     }
   }

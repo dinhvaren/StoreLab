@@ -1,16 +1,85 @@
 <style>
-  :root{
+  :root {
     --bg:#06060a;
     --card:#0f1720;
     --accent:#7c4dff;
     --muted:#cbd5e1;
   }
-  body{ background:linear-gradient(180deg,var(--bg), #041021); color:#f8fafc; font-family:Inter,system-ui; }
-  .card-product{ background:linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:#f1f5f9;}
-  .price{ font-weight:700; color:#fff;}
-  .muted{ color:var(--muted);}
-  .hero{ padding:1.25rem; border-radius:12px; background:rgba(255,255,255,0.04); margin-bottom:1.25rem;}
+  body {
+    background: linear-gradient(180deg, var(--bg), #041021);
+    color: #f8fafc;
+    font-family: Inter, system-ui;
+  }
+  .card-product {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    color: #f1f5f9;
+  }
+  .price { font-weight: 700; color: #fff; }
+  .muted { color: var(--muted); }
+  .hero {
+    padding: 1.25rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.04);
+    margin-bottom: 1.25rem;
+  }
+
+  .toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: rgba(20, 25, 35, 0.95);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 260px;
+    border-left: 4px solid var(--accent);
+    opacity: 0;
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+    pointer-events: auto;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .toast.hide {
+    opacity: 0;
+    transform: translateX(150%);
+  }
+
+  .toast.success { border-left-color: #4ade80; }
+  .toast.error { border-left-color: #ef4444; }
+  .toast.warning { border-left-color: #facc15; }
+
+  .toast .close-btn {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0;
+  }
+  .toast .close-btn:hover { color: #fff; }
 </style>
+
 {{> header}}
 <div class="container-xl">
   <div class="hero d-flex justify-content-between align-items-center">
@@ -57,7 +126,35 @@
   </div>
 </div>
 {{> footer}}
+<div class="toast-container" id="toastContainer"></div>
+
 <script>
+  function showToast(message, type = "success", duration = 4000) {
+    const container = document.getElementById("toastContainer");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <span>${message}</span>
+      <button class="close-btn">&times;</button>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+      toast.classList.add("show");
+    });
+
+    const timeout = setTimeout(() => hideToast(), duration);
+
+    toast.querySelector(".close-btn").addEventListener("click", hideToast);
+
+    function hideToast() {
+      toast.classList.add("hide");
+      clearTimeout(timeout);
+      setTimeout(() => toast.remove(), 400);
+    }
+  }
+
   document.querySelectorAll(".btn-buy").forEach(btn => {
     btn.addEventListener("click", async () => {
       const productId = btn.getAttribute("data-id");
@@ -66,25 +163,26 @@
       try {
         const res = await fetch(`/buy/${productId}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
         });
         const data = await res.json();
 
         if (data.success) {
-          alert(`✅ ${data.message}`);
+          showToast(`✅ ${data.message}`, "success");
+
           if (data.flag) {
-            alert(`🎯 FLAG: ${data.flag}`);
-            console.log("%cFLAG:", "color:#7c4dff;font-weight:bold;", data.flag);
+            showToast(`🎯 FLAG unlocked!`, "warning", 6000);
+            console.log("%c🎯 FLAG:", "color:#7c4dff;font-weight:bold;", data.flag);
           }
-          location.reload();
+
+          setTimeout(() => location.reload(), 2000);
         } else {
-          alert(`⚠️ ${data.message}`);
+          showToast(`⚠️ ${data.message}`, "error");
         }
       } catch (err) {
-        alert("❌ Lỗi khi gửi yêu cầu mua hàng.");
-        console.error(err);
+        console.error("❌ Lỗi khi gửi yêu cầu mua hàng:", err);
+        showToast("❌ Lỗi khi gửi yêu cầu mua hàng.", "error");
       }
     });
   });
 </script>
-

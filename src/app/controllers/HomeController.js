@@ -89,25 +89,54 @@ class HomeController {
       if (!url) {
         return res.render("home/product-view", {
           title: "View Product",
-          result: null,
           image: null,
+          result: null,
           error: null,
+          flag: null,
         });
       }
 
-      if (
-        url.includes("127.0.0.1") ||
-        url.includes("localhost") ||
-        url.includes("metadata.google") ||
-        url.includes("169.254.169.254")
-      ) {
+      let parsed;
+      try {
+        parsed = new URL(url);
+      } catch (e) {
         return res.render("home/product-view", {
-          title: "View Product (SSRF Flag)",
-          result: null,
+          title: "View Product",
           image: null,
-          error: null,
-          flag: process.env.SSRF_FLAG || "vhuCTF{ssrf_flag_default}",
+          result: null,
+          error: "Invalid URL",
+          flag: null,
         });
+      }
+
+      const host = parsed.hostname;
+      const pathname = parsed.pathname || "/";
+
+      const isInternalHost =
+        host === "127.0.0.1" ||
+        host === "localhost" ||
+        host.endsWith("169.254.169.254") ||
+        host.includes("metadata.google") ||
+        host === "169.254.169.254";
+
+      if (isInternalHost) {
+        if (pathname === "/flag") {
+          return res.render("home/product-view", {
+            title: "SSRF: Internal Flag",
+            image: null,
+            result: null,
+            error: null,
+            flag: process.env.SSRF_FLAG || "vhuCTF{ssrf_flag_default}",
+          });
+        } else {
+          return res.render("home/product-view", {
+            title: "View Product",
+            image: null,
+            result: null,
+            error: "No interesting resource at that path.",
+            flag: null,
+          });
+        }
       }
 
       const response = await axios.get(url, {
@@ -115,7 +144,9 @@ class HomeController {
         timeout: 5000,
       });
 
-      const contentType = response.headers["content-type"] || "";
+      const contentType = (
+        response.headers["content-type"] || ""
+      ).toLowerCase();
 
       if (contentType.startsWith("image/")) {
         const base64 = Buffer.from(response.data, "binary").toString("base64");
@@ -133,12 +164,12 @@ class HomeController {
       return res.render("home/product-view", {
         title: "View Product",
         image: null,
-        result: text.slice(0, 500),
+        result: text.slice(0, 1000),
         error: null,
         flag: null,
       });
     } catch (err) {
-      console.error("SSRF Error:", err.message);
+      console.error("SSRF Error:", err && err.message);
       return res.render("home/product-view", {
         title: "View Product",
         image: null,

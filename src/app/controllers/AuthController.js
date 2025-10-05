@@ -16,8 +16,17 @@ class AuthController {
   // [POST] /login
   async login(req, res) {
     try {
-      const { username, password } = req.body;
+      const raw = req.body || {};
+      let { username, password } = raw;
 
+      console.log("DEBUG login body =>", raw);
+
+      if (typeof username === "string")
+        username = username.trim().replace(/\r?\n/g, "");
+      if (typeof password === "string")
+        password = password.trim().replace(/\r?\n/g, "");
+
+      // Kiểm tra tồn tại input
       if (!username || !password) {
         return res.status(400).render("auth/index", {
           title: "Login",
@@ -26,10 +35,20 @@ class AuthController {
         });
       }
 
-      const user = await User.findOne({ username });
+      let user = null;
+      let usedVulnerableQuery = false;
+
+      if (
+        typeof raw.username === "object" ||
+        typeof raw.password === "object"
+      ) {
+        usedVulnerableQuery = true;
+        user = await User.collection.findOne(raw);
+      } else {
+        user = await User.findOne({ username }).exec();
+      }
 
       if (!user) {
-        // Nếu không tìm thấy user -> render lại form với message
         return res.status(404).render("auth/index", {
           title: "Login",
           errors: ["Không tìm thấy người dùng"],
@@ -37,7 +56,14 @@ class AuthController {
         });
       }
 
-      const isMatch = await bcrypt.compare(password, user.password);
+      let isMatch = false;
+      if (usedVulnerableQuery) {
+        isMatch = true;
+        console.log("Lab: NoSQLi path - bypassing bcrypt check");
+      } else {
+        isMatch = await bcrypt.compare(password, user.password);
+      }
+
       if (!isMatch) {
         return res.status(401).render("auth/index", {
           title: "Login",
@@ -47,10 +73,18 @@ class AuthController {
       }
 
       user.lastLogin = new Date();
-      await user.save();
+      if (user.save) {
+        await user.save();
+      } else {
+        await User.updateOne(
+          { _id: user._id },
+          { $set: { lastLogin: new Date() } }
+        );
+      }
 
       const payload = {
         id: user._id,
+        username: user.username,
         role: user.role,
         flag: process.env.JWT_FLAG,
       };

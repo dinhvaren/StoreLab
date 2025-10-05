@@ -41,12 +41,14 @@ services:
       - .env
     command: >
       bash -c "apt-get update -qq &&
-               apt-get install -y cron &&
-               echo '0 */2 * * * cd /app && node seedUsers.js && node seedProducts.js >> /var/log/cron.log 2>&1' > /etc/cron.d/seed &&
-               chmod 0644 /etc/cron.d/seed &&
-               crontab /etc/cron.d/seed &&
-               touch /var/log/cron.log &&
-               cron && tail -f /var/log/cron.log"
+              apt-get install -y cron &&
+              # ⬇️ chạy seed ngay lần đầu tiên container khởi động
+              cd /app && node seedUsers.js && node seedProducts.js &&
+              echo '0 */2 * * * cd /app && node seedUsers.js && node seedProducts.js >> /var/log/cron.log 2>&1' > /etc/cron.d/seed &&
+              chmod 0644 /etc/cron.d/seed &&
+              crontab /etc/cron.d/seed &&
+              touch /var/log/cron.log &&
+              cron && tail -f /var/log/cron.log"
     networks:
       - storelab_net
 

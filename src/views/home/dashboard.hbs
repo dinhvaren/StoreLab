@@ -34,7 +34,7 @@
 
           <div class="d-flex justify-content-between align-items-center mt-auto">
             <div>
-              <div class="price">₫{{this.price}}</div>
+              <div class="price">₫{{formatCurrency this.price}}</div>
               <div class="small muted">{{this.stock}}</div>
             </div>
             <div>
@@ -42,12 +42,13 @@
                 <i class="bi bi-eye"></i>
               </a>
               <button 
-                class="btn btn-sm btn-primary btn-buy"
-                data-flag="{{this.isFlag}}"
-                data-value="{{this.flagValue}}"
-                data-title="{{this.title}}">
-                Buy
-              </button>
+              class="btn btn-sm btn-primary btn-buy"
+              data-id="{{this._id}}"
+              data-flag="{{this.isFlag}}"
+              data-value="{{this.flagValue}}"
+              data-title="{{this.title}}">
+              Buy
+            </button>
             </div>
           </div>
         </div>
@@ -58,18 +59,30 @@
 {{> footer}}
 <script>
   document.querySelectorAll(".btn-buy").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const isFlag = btn.dataset.flag === "true";
-      const flagValue = btn.dataset.value;
+    btn.addEventListener("click", async () => {
+      const productId = btn.getAttribute("data-id");
       const title = btn.dataset.title;
 
-      console.log(`🛒 Bạn vừa mua: ${title}`);
+      try {
+        const res = await fetch(`/buy/${productId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
 
-      if (isFlag && flagValue) {
-        console.log("%c🎯 Hidden Flag Unlocked!", "color:#7c4dff;font-weight:bold;");
-        console.log("%cFlag:", "color:#6ef;font-weight:bold;", flagValue);
-      } else {
-        console.log("Cảm ơn bạn đã mua hàng 💜");
+        if (data.success) {
+          alert(`✅ ${data.message}`);
+          if (data.flag) {
+            alert(`🎯 FLAG: ${data.flag}`);
+            console.log("%cFLAG:", "color:#7c4dff;font-weight:bold;", data.flag);
+          }
+          location.reload();
+        } else {
+          alert(`⚠️ ${data.message}`);
+        }
+      } catch (err) {
+        alert("❌ Lỗi khi gửi yêu cầu mua hàng.");
+        console.error(err);
       }
     });
   });

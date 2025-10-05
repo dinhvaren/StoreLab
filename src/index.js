@@ -31,6 +31,13 @@ app.engine(
           minute: "2-digit",
         });
       },
+      formatCurrency: function (value) {
+        if (!value || isNaN(value)) return "0 đ";
+        return new Intl.NumberFormat("vi-VN", {
+          style: "currency",
+          currency: "VND",
+        }).format(value);
+      },
     },
     partialsDir: [
       path.join(__dirname, "views/partials"),

@@ -71,7 +71,7 @@ const products = [
   {
     title: "CTF VIP Flag",
     description: "A mysterious product. Purchasing returns a hidden flag in the API response.",
-    price: 99999,
+    price: 9999999,
     stock: "In stock",
     imageUrl: "https://hunghau.vn/wp-content/uploads/2018/05/vhu.jpg",
     isFlag: true,

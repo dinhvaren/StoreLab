@@ -1,12 +1,4 @@
-<!doctype html>
-<html lang="vi">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Product Image View</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/images/logo-removebg-preview.png" />
-  <style>
+<style>
     :root{
       --bg:#07121a;
       --card: rgba(255,255,255,0.03);
@@ -23,7 +15,10 @@
       justify-content:center;
       padding:18px;
     }
-    .wrap{ width:100%; max-width:1100px; }
+    .wrap{
+      width:100%;
+      max-width:1100px;
+    }
     .card { background: var(--card); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; padding:14px; }
     .toolbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:12px; }
     .small-muted { color:var(--muted); font-size:0.92rem; }
@@ -32,15 +27,17 @@
     .notice { text-align:center; padding:56px 10px; color:var(--muted); }
     a.btn-back { text-decoration:none; color:#e6eef8; border:1px solid rgba(255,255,255,0.06); padding:6px 10px; border-radius:6px; background:transparent; }
   </style>
-</head>
-<body>
   <div class="wrap">
     <div class="card">
       <div class="toolbar">
-        <a class="btn-back" href="dashboard.html">← Back to Store</a>
+        <div>
+          <a class="btn-back" href="dashboard.html">← Back to Store</a>
+        </div>
+        <div class="small-muted">Product Image View — proxy via <code>/product/view?url=...</code></div>
       </div>
 
-      <div id="resultArea" class="img-wrap"></div>
+      <div id="resultArea" class="img-wrap">
+      </div>
     </div>
   </div>
 
@@ -53,17 +50,15 @@
     const url = getQueryParam('url');
 
     if (!url) {
-      resultArea.innerHTML = '<div class="notice">No image specified.<br>Use <code>?url=&lt;IMAGE_URL&gt;</code></div>';
+      resultArea.innerHTML = '<div class="notice">No image specified. Open this page with <code>?url=&lt;IMAGE_URL&gt;</code> to view the image via server proxy.</div>';
     } else {
       const proxy = '/product/view?url=' + encodeURIComponent(url);
       const img = document.createElement('img');
       img.src = proxy;
       img.alt = 'Product image (proxied)';
       img.onerror = function(){
-        resultArea.innerHTML = '<div class="notice" style="color:#ffb4b4">Không thể tải ảnh.<br>Server có thể trả lỗi hoặc nội dung không phải là ảnh.</div>';
+        resultArea.innerHTML = '<div class="notice" style="color:#ffb4b4">Không thể tải ảnh. Server có thể trả lỗi hoặc nội dung không phải là ảnh.</div>';
       };
       resultArea.appendChild(img);
     }
   </script>
-</body>
-</html>

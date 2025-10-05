@@ -7,11 +7,21 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --inspect src/index.js"
+    "formatter": "prettier 'src/**/*.{js,scss,json,hbs}' --tab-width 4 --write --single-quote --trailing-comma all",
+    "start": "nodemon --inspect src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "sass --watch src/resources/scss:src/public/css",
+    "build:scss": "sass --watch src/css/app.scss:src/css/app.css",
+    "build:css": "npx tailwindcss -i ./src/css/app.css -o ./public/css/app.css --watch",
+    "dev": "npm run build:scss & npm run build:css"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
     "mongoose": "^8.18.3",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2",
+    "sass": "^1.93.2"
   },
   "dependencies": {
     "axios": "^1.12.2",
@@ -22,6 +32,7 @@
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
     "express-session": "^1.18.2",
     "jquery": "^3.7.1",
     "jsonwebtoken": "^9.0.2",

@@ -6,17 +6,38 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const db = require("./config/database");
 const app = express();
+const { engine } = require("express-handlebars");
+
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use("/images", express.static(path.join(__dirname, "..", "images")));
-app.use(express.static(path.join(__dirname, "..", "views")));
+
+app.engine(
+  "hbs",
+  engine({
+    extname: ".hbs",
+     partialsDir: [
+      path.join(__dirname, "views/partials"),
+      path.join(__dirname, "views/home"),
+      path.join(__dirname, "views/error"),
+      path.join(__dirname, "views/auth"),
+    ],
+    runtimeOptions: {
+      allowProtoPropertiesByDefault: true,
+    },
+    defaultLayout: "main",
+  })
+);
+
+app.set("view engine", "hbs");
+app.set("views", path.join(__dirname, "views"));
 
 const port = process.env.PORT;
 const host = process.env.HOST;
 
-db.connect();
+// db.connect();
 
 const isProduction = process.env.NODE_ENV === "production";
 

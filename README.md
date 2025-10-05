@@ -1,100 +1,126 @@
-# 🛒 StoreLab — Vulnerable Web Lab
+# StoreLab — Vulnerable Web Application for Security Learning & CTF
 
-StoreLab là một **môi trường web ứng dụng giả lập** được xây dựng để sinh viên và người học bảo mật có thể thực hành khai thác các lỗ hổng phổ biến.  
-Dự án sử dụng **Node.js, Express, MongoDB** và **Bootstrap (dark theme)** để mô phỏng một cửa hàng trực tuyến đơn giản.
+**StoreLab** là một môi trường web giả lập, được thiết kế để sinh viên, người học bảo mật có thể thực hành khai thác các lỗi bảo mật phổ biến. Ứng dụng mô phỏng một cửa hàng trực tuyến đơn giản, có sản phẩm, đơn hàng, quản lý người dùng, và các lỗ hổng như Broken Access Control, NoSQL Injection, SSRF, JWT tampering, v.v.
 
-> ⚠️ **Lưu ý quan trọng:** Đây là ứng dụng **dành cho mục đích học tập/CTF**. Không triển khai lên môi trường production.
+> **⚠️ Cảnh báo**: Đây là ứng dụng dành cho mục đích **học tập/CTF**. Không nên triển khai lên môi trường production hoặc hệ thống thực tế.
 
+## 📦 Tính năng & lỗ hổng mô phỏng
 
-## ✨ Các tính năng & lỗ hổng mô phỏng
-
-- **Authentication**
-  - Đăng ký / Đăng nhập (JWT token)
-  - Lưu trữ session cơ bản
-
-- **Dashboard**
-  - Danh sách 10 sản phẩm mẫu
-  - Chức năng "View image" → SSRF Lab
-
-- **Orders**
-  - Người dùng xem đơn hàng của mình
-  - Lỗi **Broken Access Control** (có thể truy cập đơn hàng người khác qua URL)
-
-- **Profile (Users)**
-  - Hiển thị thông tin tài khoản
-  - Recent activity
-
-- **Admin Panel**
-  - Trang quản lý user (CRUD)
-  - Lỗi **IDOR / BAC** nếu không kiểm tra role
-
-- **Lỗ hổng mô phỏng**
-  - 🗄️ **NoSQL Injection**
-  - 🔑 **JWT bypass / forgery**
-  - 🔓 **Broken Access Control**
-  - 🌐 **SSRF**
+- **Đăng ký / Đăng nhập** — sử dụng JWT + session
+- **User Dashboard** — xem profile, lịch sử đơn hàng
+- **Orders** — mỗi user chỉ nên xem đơn hàng của mình
+- **Quản lý người dùng (Admin Panel)** — CRUD user
+- **Sản phẩm mẫu** — trong đó có 1 sản phẩm “flag” trả về flag nếu mua
+- **Lỗ hổng mô phỏng**:
+  - Broken Access Control / IDOR (truy cập đơn hàng người khác, truy cập endpoint admin khi không kiểm tra role)
+  - NoSQL Injection (bypass login, truy vấn độc hại)
+  - JWT Forgery / Tampering (thay đổi payload để leo quyền)
+  - SSRF (view hình ảnh sản phẩm — gọi URL từ server)
+  - Logic bugs khác (quyền, nghiệp vụ mua hàng)
 
 ## 📂 Cấu trúc thư mục
 
-```bash
+```
+
 StoreLab/
-├── public/
-│   ├── index.html        # Trang đăng ký / đăng nhập
-│   ├── dashboard.html    # Trang dashboard store
-│   ├── orders.html       # Danh sách orders
-│   ├── order-view.html   # Chi tiết order
-│   ├── users.html        # Profile người dùng
-│   ├── admin-users.html  # Quản lý user (Admin)
-│   ├── product-view.html # SSRF lab (fetch ảnh qua server)
-│   └── assets/           # CSS, JS, hình ảnh tĩnh
-├── server/
-│   ├── app.js            # Express app
-│   ├── routes/           # Định nghĩa route
-│   └── models/           # Schema MongoDB
+├── images/                # Thư mục chứa ảnh hoặc ảnh upload
+├── src/
+│   ├── app/
+│   │   ├── controllers/
+│   │   ├── models/
+│   │   │   ├── User.js
+│   │   │   ├── Product.js
+│   │   │   └── Order.js
+│   │   ├── routes/
+│   │   └── views/
+│   ├── index.js
+│   └── .env  (cấu hình môi trường, connect DB)
+├── seedUsers.js            # Script seed user mẫu (admin, test, etc.)
+├── seedProducts.js         # Script seed sản phẩm mẫu (bao gồm product flag)
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
 └── README.md
+
 ````
 
-
-## 🚀 Cài đặt & chạy
+## 🛠️ Cài đặt & chạy
 
 ### Yêu cầu
 
-* Node.js >= 16
-* MongoDB Community Server (chạy local hoặc Docker)
+- Docker & Docker Compose  
+- Node.js ≥ 16 nếu chạy local (không Docker)  
+- MongoDB (nếu không dùng Docker)
 
-### Cách chạy
+### Chạy bằng Docker (cách được khuyến nghị)
+
+1. Clone repo:
+
+   ```bash
+   git clone https://github.com/dinhvaren/StoreLab.git
+   cd StoreLab
+````
+
+2. Xây dựng & chạy:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. Truy cập ứng dụng:
+
+   ```
+   http://localhost:3000
+   ```
+
+
+## ⏲️ Reset dữ liệu định kỳ mỗi 2 tiếng (Cron seed)
+
+Đã cấu hình trong `docker-compose.yml` một service tên `mongo_cleaner` để:
+
+* Chạy seed user & product ngay khi container khởi động
+* Sau đó chạy lại seed mỗi 2 tiếng (cron: `0 */2 * * *`)
+
+Bạn có thể xem log:
 
 ```bash
-# Clone repo
-git clone https://github.com/dinhvaren/StoreLab.git
-cd StoreLab
-
-# Cài dependencies
-npm install
-
-# Chạy server
-npm start
+docker logs -f mongo_cleaner
 ```
 
-Ứng dụng sẽ chạy ở:
-👉 [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
+Nếu bạn muốn chỉ seed `products` (giữ user admin bất biến), có thể chỉnh dòng cron trong `docker-compose.yml` thành:
 
+```bash
+node seedProducts.js
+```
+
+---
+
+## 🧪 Sử dụng script seed đúng cách
+
+* `seedUsers.js` — tạo user mẫu (admin, user bình thường) — nên drop index & reset counters trước khi insert nếu dùng plugin auto-increment.
+* `seedProducts.js` — xóa collection `products` rồi insert sản phẩm mẫu (có flag).
+* Nên dùng `.save()` thay vì `insertMany` nếu bạn dùng plugin mongoose-sequence để đảm bảo `_id` / `userId` được gán chính xác.
 
 ## 🎯 Hướng dẫn khai thác
 
-* **NoSQLi:** Đăng nhập với payload đặc biệt để bypass auth.
-* **JWT:** Thử sửa / forge token để truy cập role cao hơn.
-* **Broken Access Control:** Truy cập `orders/:id` hoặc `admin/users` trực tiếp.
-* **SSRF:** Dùng `product-view.html?url=http://127.0.0.1:27017/` để test.
+Dưới đây là một số ý tưởng để thực hành:
 
+* NoSQL Injection: thử bypass login với payload JSON đặc biệt
+* JWT Forgery: chỉnh sửa payload token để leo quyền
+* IDOR / Broken Access Control: truy cập `/orders/:id` hoặc admin routes người dùng khác
+* SSRF: thử truyền URL tới `product-view` parameter
+* Logic flaw: mua sản phẩm flag, kiểm tra phản hồi flagValue
 
-## ⚠️ Cảnh báo
+## 🧩 Ghi chú & cảnh báo
 
-Ứng dụng này **chỉ phục vụ nghiên cứu và học tập**.
-Không triển khai lên môi trường internet công khai hoặc sử dụng cho mục đích trái phép.
+* Không thích hợp để deploy công khai
+* Không nên chứa dữ liệu thật
+* Chỉ dùng cho mục đích học tập, thí nghiệm bảo mật
+* Có thể gây lỗi nếu plugin auto-increment hoặc counters bị xung đột — hãy reset counters / drop index khi seed lại
 
+## 👤 Tác giả & đóng góp
 
-## 👨‍💻 Tác giả
+* Dự án xây dựng bởi **dinhvaren**
+* Mục đích: môi trường CTF / lab bảo mật cho sinh viên & cộng đồng
+* Rất hoan nghênh các PR, issue sửa lỗi, bổ sung lỗ hổng mới
 
-* Dự án được xây dựng bởi [dinhvaren](https://github.com/dinhvaren)
-* Phục vụ học tập và thực hành CTF / Pentest tại trường & cộng đồng.

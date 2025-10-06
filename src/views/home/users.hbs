@@ -90,7 +90,7 @@
       <dt class="col-sm-3">Username</dt><dd class="col-sm-9">{{profile.username}}</dd>
       <dt class="col-sm-3">Email</dt><dd class="col-sm-9">{{profile.email}}</dd>
       <dt class="col-sm-3">Role</dt><dd class="col-sm-9">{{profile.role}}</dd>
-      <dt class="col-sm-3">Balance</dt><dd class="col-sm-9">₫{{profile.balance}}</dd>
+      <dt class="col-sm-3">Balance</dt><dd class="col-sm-9">₫{{formatCurrency profile.balance}}</dd>
       <dt class="col-sm-3">Member Since</dt><dd class="col-sm-9">{{formatDate profile.createdAt}}</dd>
       <dt class="col-sm-3">Last Login</dt><dd class="col-sm-9">{{formatDate profile.lastLogin}}</dd>
     </dl>

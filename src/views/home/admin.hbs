@@ -145,7 +145,7 @@
                   <span class="badge badge-role-user">user</span>
                 {{/if}}
               </td>
-              <td>₫{{this.balance}}</td>
+              <td>₫{{formatCurrency this.balance}}</td>
               <td class="td-lastlogin small-muted">{{formatDate this.lastLogin}}</td>
               <td>
                 <div class="d-flex flex-column">
@@ -396,14 +396,12 @@
     let res, data;
 
     if (id) {
-      // PUT — Cập nhật user
       res = await fetch(`/admin/users/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, role }),
       });
     } else {
-      // POST — Tạo mới user
       res = await fetch(`/admin/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
